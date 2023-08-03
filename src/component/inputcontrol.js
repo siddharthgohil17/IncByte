@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const Chandrayaan3Control = () => {
     const [position, setPosition] = useState({ x: 0, y: 0, z: 0 });
     const [direction, setDirection] = useState('N');
-    const [commands, SetCommands] = useState('')
+    const [commands, SetCommands] = useState("")
     const [stopExecution, SetStopExecution] = useState(false);
 
     const moveforward = () => {
@@ -122,8 +122,9 @@ const Chandrayaan3Control = () => {
 
     const handleCommands = (e) => {
         e.preventDefault();
-        
-        for (let command of commands) {
+        SetStopExecution(false);
+        const commandsArray = commands.split(",");
+        for (let command of commandsArray) {
             switch (command) {
                 case 'f':
                     moveforward();
@@ -146,15 +147,14 @@ const Chandrayaan3Control = () => {
                 default:
                     break;
             }
-            SetCommands('')
+         
         }
-
-
+        SetStopExecution(true);
     }
 
     const handleDeclareResutlt = (e) => {
         e.preventDefault();
-        SetCommands("");
+        SetCommands([]);
         
         SetStopExecution(true);
     }
