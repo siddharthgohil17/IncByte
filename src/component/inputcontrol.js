@@ -145,7 +145,7 @@ const Chandrayaan3Control = () => {
 
   const handleStopExecution = () => {
     setStopExecution(true);
-    
+
   };
 
   const handleInitialValuesSubmit = (e) => {
@@ -185,7 +185,7 @@ const Chandrayaan3Control = () => {
           <input type="text" value={commands} onChange={(e) => setCommands(e.target.value)} required />
         </label>
         <button type="submit" onClick={handleStopExecution}>Execute Commands</button>
-       
+
       </form>
 
       {/* Display the final position and direction here */}
