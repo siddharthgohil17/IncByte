@@ -5,11 +5,12 @@ const Chandrayaan3Control = () => {
   const [direction, setDirection] = useState('N');
   const [initialPosition, setInitialPosition] = useState('0, 0, 0');
   const [initialDirection, setInitialDirection] = useState('N');
-  const [commands, setCommands] = useState("");
-  const [stopExecution, setStopExecution] = useState(false); // Initially set to true
+  const [commands, setCommands] = useState('');
+  const [stopExecution, setStopExecution] = useState(false);
+  const [positionsHistory, setPositionsHistory] = useState([]);
+  const [stepCount, setStepCount] = useState(0); // New state to keep track of the step count
 
   const moveForward = (currentPosition, currentDirection) => {
-    // Implement the logic to move the spacecraft one step forward based on its current direction
     switch (currentDirection) {
       case 'N':
         return { x: currentPosition.x, y: currentPosition.y + 1, z: currentPosition.z };
@@ -48,7 +49,6 @@ const Chandrayaan3Control = () => {
   };
 
   const turnLeft = (currentDirection) => {
-    // Implement the logic to turn the spacecraft 90 degrees left based on its current direction
     switch (currentDirection) {
       case 'N':
         return 'W';
@@ -68,7 +68,6 @@ const Chandrayaan3Control = () => {
   };
 
   const turnRight = (currentDirection) => {
-    // Implement the logic to turn the spacecraft 90 degrees right based on its current direction
     switch (currentDirection) {
       case 'N':
         return 'E';
@@ -88,77 +87,87 @@ const Chandrayaan3Control = () => {
   };
 
   const turnUp = () => {
-    // Implement the logic to turn the spacecraft upward
     return 'U';
   };
 
   const turnDown = () => {
-    // Implement the logic to turn the spacecraft downward
     return 'D';
+  };
+
+  const logPositions = (positions) => {
+    console.log('Position History:');
+    positions.forEach((pos, index) => {
+      console.log(`Step ${index + 1}: x=${pos.x}, y=${pos.y}, z=${pos.z}`);
+    });
   };
 
   const handleCommandsSubmit = (e) => {
     e.preventDefault();
-    setStopExecution(false); // Reset the stopExecution flag
-
+    setStopExecution(false);
+    setPositionsHistory([]);
+  
+  
     if (commands.length === 0) {
-      return; // Don't proceed if there are no commands
+      return;
     }
-
-    const commandArray = commands.split(','); // Split commands into an array
-
+  
+    const commandArray = commands.split(',');
+  
     let currentPosition = { ...position };
     let currentDirection = direction;
-
+    let tempPositions = []; // Temporary array to store positions
+  
     for (let command of commandArray) {
+      setStepCount((prevStep) => prevStep + 1);
       switch (command.trim().toLowerCase()) {
-        case "f":
+        case 'f':
           currentPosition = moveForward(currentPosition, currentDirection);
           break;
-        case "b":
+        case 'b':
           currentPosition = moveBackward(currentPosition, currentDirection);
           break;
-        case "r":
+        case 'r':
           currentDirection = turnRight(currentDirection);
           break;
-        case "l":
+        case 'l':
           currentDirection = turnLeft(currentDirection);
           break;
-        case "u":
+        case 'u':
           currentDirection = turnUp();
           break;
-        case "d":
+        case 'd':
           currentDirection = turnDown();
           break;
         default:
           break;
       }
+  
+      tempPositions.push({ ...currentPosition });
     }
-
-    // Update the final position and direction
+  
+    // Update the position history after all commands are executed
+    setPositionsHistory(tempPositions);
+  
     setPosition(currentPosition);
     setDirection(currentDirection);
-
-    // Once all commands are executed, set the stopExecution flag to true
     setStopExecution(true);
   };
+  
+
+  useEffect(() => {
+    logPositions(positionsHistory);
+  }, [positionsHistory]);
 
   const handleStopExecution = () => {
     setStopExecution(true);
-
   };
 
   const handleInitialValuesSubmit = (e) => {
     e.preventDefault();
-    // Set the initial position and direction based on the user input
     const [x, y, z] = initialPosition.split(',').map((val) => parseInt(val.trim(), 10));
     setPosition({ x, y, z });
     setDirection(initialDirection);
   };
-
-  useEffect(() => {
-    console.log("Position updated:", position);
-  }, [position, direction]);
 
   return (
     <div>
@@ -185,15 +194,14 @@ const Chandrayaan3Control = () => {
           <input type="text" value={commands} onChange={(e) => setCommands(e.target.value)} required />
         </label>
         <button type="submit" onClick={handleStopExecution}>Execute Commands</button>
-
       </form>
 
-      {/* Display the final position and direction here */}
       {stopExecution && (
         <div>
           <h3>Final Position:</h3>
           <p>Position: ({position.x}, {position.y}, {position.z})</p>
           <p>Direction: {direction}</p>
+         
         </div>
       )}
     </div>
