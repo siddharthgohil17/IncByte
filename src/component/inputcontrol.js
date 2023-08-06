@@ -8,7 +8,7 @@ const Chandrayaan3Control = () => {
   const [commands, setCommands] = useState('');
   const [stopExecution, setStopExecution] = useState(false);
   const [positionsHistory, setPositionsHistory] = useState([]);
-  const [stepCount, setStepCount] = useState(0); // New state to keep track of the step count
+
 
   const moveForward = (currentPosition, currentDirection) => {
     switch (currentDirection) {
@@ -33,6 +33,7 @@ const Chandrayaan3Control = () => {
     switch (currentDirection) {
       case 'N':
         return { x: currentPosition.x, y: currentPosition.y - 1, z: currentPosition.z };
+      
       case 'S':
         return { x: currentPosition.x, y: currentPosition.y + 1, z: currentPosition.z };
       case 'E':
@@ -118,7 +119,7 @@ const Chandrayaan3Control = () => {
     let tempPositions = []; // Temporary array to store positions
   
     for (let command of commandArray) {
-      setStepCount((prevStep) => prevStep + 1);
+     
       switch (command.trim().toLowerCase()) {
         case 'f':
           currentPosition = moveForward(currentPosition, currentDirection);
@@ -184,10 +185,8 @@ const Chandrayaan3Control = () => {
         </label>
         <button type="submit">Set Initial Values</button>
       </form>
-
       <p>Current Position: ({position.x}, {position.y}, {position.z})</p>
       <p>Current Direction: {direction}</p>
-
       <form onSubmit={handleCommandsSubmit}>
         <label>
           Enter Commands:
@@ -195,7 +194,6 @@ const Chandrayaan3Control = () => {
         </label>
         <button type="submit" onClick={handleStopExecution}>Execute Commands</button>
       </form>
-
       {stopExecution && (
         <div>
           <h3>Final Position:</h3>
