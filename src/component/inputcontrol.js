@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef} from 'react';
 
 const Chandrayaan3Control = () => {
   const [position, setPosition] = useState({ x: 0, y: 0, z: 0 });
@@ -8,6 +8,16 @@ const Chandrayaan3Control = () => {
   const [commands, setCommands] = useState('');
   const [stopExecution, setStopExecution] = useState(false);
   const [positionsHistory, setPositionsHistory] = useState([]);
+  const showAlertRef = useRef(true);
+
+  useEffect(() => {
+    if (showAlertRef.current) {
+      showAlertRef.current = false;
+      alert(
+        'Please choose a direction between (N, S, W, E), choose commands between (f, r, u, b, l,d), and write the position according to this example (1, 2, 3) for a better experience.'
+      );
+    }
+  }, []);;
 
 
   const moveForward = (currentPosition, currentDirection) => {
@@ -155,6 +165,7 @@ const Chandrayaan3Control = () => {
   };
   
 
+
   useEffect(() => {
     logPositions(positionsHistory);
   }, [positionsHistory]);
@@ -164,6 +175,8 @@ const Chandrayaan3Control = () => {
   };
 
   const handleInitialValuesSubmit = (e) => {
+    
+    
     e.preventDefault();
     const [x, y, z] = initialPosition.split(',').map((val) => parseInt(val.trim(), 10));
     setPosition({ x, y, z });
@@ -189,7 +202,7 @@ const Chandrayaan3Control = () => {
       <p>Current Direction: {direction}</p>
       <form onSubmit={handleCommandsSubmit}>
         <label>
-          Enter Commands:
+           Enter Commands:
           <input type="text" value={commands} onChange={(e) => setCommands(e.target.value)} required />
         </label>
         <button type="submit" onClick={handleStopExecution}>Execute Commands</button>

@@ -33,6 +33,8 @@ test('Define initial position and direction', () => {
   expect(currentDirectionElement).toBeInTheDocument();
 });
 
+
+
 test('Display final position and direction after command execution', () => {
   render(<Chandrayaan />);
 
